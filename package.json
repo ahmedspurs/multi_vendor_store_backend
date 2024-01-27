@@ -1,0 +1,28 @@
+{
+  "name": "ecommerce-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "dev": "nodemon server",
+    "start": "node server.js",
+    "sequelize": "sequelize-auto -h localhost -d multi_vendor -u root -x -p 3306 -o models"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.1",
+    "express-easy-fileuploader": "^1.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.19",
+    "request": "^2.88.2",
+    "sequelize": "^6.21.3",
+    "sequelize-auto": "^0.8.8"
+  }
+}

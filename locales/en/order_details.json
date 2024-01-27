@@ -1,0 +1,16 @@
+ {
+        "success": {
+             "insert": " data created successfully",
+             "display":"data fetched successfully",
+             "update":"data updated successfully"
+        },
+        "exceptions":{
+           "insert_error":"The data  you provided is not completed",
+           "delete_error":"filed to delete data, please try again",
+           "update_error":"updated field please try again",
+           "display_error":"filed to display data , please try again",
+           "msg_error":"Something went wrong , please try again"
+        
+        }
+    }
+

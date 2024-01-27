@@ -1,0 +1,6 @@
+/node_modules
+/temp
+/temp-output
+/public
+/public_old
+compress.js
