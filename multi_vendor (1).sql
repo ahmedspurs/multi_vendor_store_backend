@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 23, 2024 at 04:08 PM
+-- Generation Time: Jan 27, 2024 at 11:39 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -346,7 +346,9 @@ ALTER TABLE `product_variations`
 -- Indexes for table `store_details`
 --
 ALTER TABLE `store_details`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `city_id` (`city_id`);
 
 --
 -- Indexes for table `sub_categories`
@@ -517,6 +519,13 @@ ALTER TABLE `product_images`
 ALTER TABLE `product_variations`
   ADD CONSTRAINT `product_variations_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `product_variations_ibfk_2` FOREIGN KEY (`attribute_id`) REFERENCES `product_attributes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `store_details`
+--
+ALTER TABLE `store_details`
+  ADD CONSTRAINT `store_details_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `store_details_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `sub_categories`
