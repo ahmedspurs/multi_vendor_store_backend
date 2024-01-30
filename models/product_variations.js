@@ -7,23 +7,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    name: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
     product_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'products',
-        key: 'id'
-      }
-    },
-    attribute_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'product_attributes',
         key: 'id'
       }
     },
@@ -63,13 +51,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "product_id" },
-        ]
-      },
-      {
-        name: "attribute_id",
-        using: "BTREE",
-        fields: [
-          { name: "attribute_id" },
         ]
       },
     ]

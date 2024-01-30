@@ -1,5 +1,6 @@
 var DataTypes = require("sequelize").DataTypes;
 var _ads = require("./ads");
+var _attributes = require("./attributes");
 var _categories = require("./categories");
 var _cities = require("./cities");
 var _countries = require("./countries");
@@ -14,10 +15,12 @@ var _store_details = require("./store_details");
 var _sub_categories = require("./sub_categories");
 var _success_partners = require("./success_partners");
 var _users = require("./users");
+var _variation_attributes = require("./variation_attributes");
 var _vendor_payments_details = require("./vendor_payments_details");
 
 function initModels(sequelize) {
   var ads = _ads(sequelize, DataTypes);
+  var attributes = _attributes(sequelize, DataTypes);
   var categories = _categories(sequelize, DataTypes);
   var cities = _cities(sequelize, DataTypes);
   var countries = _countries(sequelize, DataTypes);
@@ -32,8 +35,13 @@ function initModels(sequelize) {
   var sub_categories = _sub_categories(sequelize, DataTypes);
   var success_partners = _success_partners(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
+  var variation_attributes = _variation_attributes(sequelize, DataTypes);
   var vendor_payments_details = _vendor_payments_details(sequelize, DataTypes);
 
+  product_attributes.belongsTo(attributes, { as: "attribute", foreignKey: "attribute_id"});
+  attributes.hasMany(product_attributes, { as: "product_attributes", foreignKey: "attribute_id"});
+  variation_attributes.belongsTo(attributes, { as: "attribute", foreignKey: "attribute_id"});
+  attributes.hasMany(variation_attributes, { as: "variation_attributes", foreignKey: "attribute_id"});
   sub_categories.belongsTo(categories, { as: "category", foreignKey: "category_id"});
   categories.hasMany(sub_categories, { as: "sub_categories", foreignKey: "category_id"});
   store_details.belongsTo(cities, { as: "city", foreignKey: "city_id"});
@@ -42,8 +50,10 @@ function initModels(sequelize) {
   countries.hasMany(cities, { as: "cities", foreignKey: "country_id"});
   vendor_payments_details.belongsTo(orders, { as: "order", foreignKey: "order_id"});
   orders.hasMany(vendor_payments_details, { as: "vendor_payments_details", foreignKey: "order_id"});
-  product_variations.belongsTo(product_attributes, { as: "attribute", foreignKey: "attribute_id"});
-  product_attributes.hasMany(product_variations, { as: "product_variations", foreignKey: "attribute_id"});
+  variation_attributes.belongsTo(product_variations, { as: "variation", foreignKey: "variation_id"});
+  product_variations.hasMany(variation_attributes, { as: "variation_attributes", foreignKey: "variation_id"});
+  product_attributes.belongsTo(products, { as: "product", foreignKey: "product_id"});
+  products.hasMany(product_attributes, { as: "product_attributes", foreignKey: "product_id"});
   product_images.belongsTo(products, { as: "product", foreignKey: "product_id"});
   products.hasMany(product_images, { as: "product_images", foreignKey: "product_id"});
   product_variations.belongsTo(products, { as: "product", foreignKey: "product_id"});
@@ -65,6 +75,7 @@ function initModels(sequelize) {
 
   return {
     ads,
+    attributes,
     categories,
     cities,
     countries,
@@ -79,6 +90,7 @@ function initModels(sequelize) {
     sub_categories,
     success_partners,
     users,
+    variation_attributes,
     vendor_payments_details,
   };
 }

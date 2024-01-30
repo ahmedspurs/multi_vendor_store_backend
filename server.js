@@ -8,6 +8,7 @@ const cors = require("cors");
 const fileEasyUpload = require("express-easy-fileuploader");
 const file_upload = require("./middleware/media_middleware");
 const ads = require("./routes/Ads");
+const attributes = require("./routes/Attributes");
 
 const categories = require("./routes/Categories");
 const cities = require("./routes/Cities");
@@ -23,6 +24,7 @@ const products = require("./routes/Products");
 const success_partners = require("./routes/SuccessPartners");
 const users = require("./routes/Users");
 const vendor_payments_details = require("./routes/VendorPaymentsDetails");
+const variation_attributes = require("./routes/VariationAttributes");
 
 const port = process.env.PORT || 3030;
 const app = express();
@@ -44,6 +46,7 @@ app.use("/api/static", express.static("public"));
 app.use(file_upload);
 //app.use(authenticate);
 app.use("/api/ads", ads);
+app.use("/api/attributes", attributes);
 app.use("/api/categories", categories);
 app.use("/api/cities", cities);
 app.use("/api/countries", countries);
@@ -57,6 +60,7 @@ app.use("/api/products", products);
 app.use("/api/success-partners", success_partners);
 app.use("/api/users", users);
 app.use("/api/vendor-payments-details", vendor_payments_details);
+app.use("/api/variation-attributes", variation_attributes);
 
 app.listen(port, () => console.log(`server is running on ,port is  ${port} `));
 module.exports = app;

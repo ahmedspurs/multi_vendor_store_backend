@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 27, 2024 at 11:39 AM
+-- Generation Time: Jan 30, 2024 at 03:16 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -32,6 +32,19 @@ CREATE TABLE `ads` (
   `name` varchar(255) NOT NULL,
   `descr` varchar(255) DEFAULT NULL,
   `image` varchar(255) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attributes`
+--
+
+CREATE TABLE `attributes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -147,7 +160,8 @@ CREATE TABLE `products_rate` (
 
 CREATE TABLE `product_attributes` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `attribute_id` int(11) NOT NULL,
   `image` varchar(255) NOT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -175,9 +189,7 @@ CREATE TABLE `product_images` (
 
 CREATE TABLE `product_variations` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
   `product_id` int(11) NOT NULL,
-  `attribute_id` int(11) NOT NULL,
   `buy_price` decimal(10,2) NOT NULL,
   `sale_price` decimal(10,2) NOT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -250,6 +262,22 @@ CREATE TABLE `users` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `variation_attributes`
+--
+
+CREATE TABLE `variation_attributes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `variation_id` int(11) NOT NULL,
+  `attribute_id` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `vendor_payments_details`
 --
 
@@ -271,6 +299,12 @@ CREATE TABLE `vendor_payments_details` (
 -- Indexes for table `ads`
 --
 ALTER TABLE `ads`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `attributes`
+--
+ALTER TABLE `attributes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -325,7 +359,9 @@ ALTER TABLE `products_rate`
 -- Indexes for table `product_attributes`
 --
 ALTER TABLE `product_attributes`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `attribute_id` (`attribute_id`);
 
 --
 -- Indexes for table `product_images`
@@ -339,8 +375,7 @@ ALTER TABLE `product_images`
 --
 ALTER TABLE `product_variations`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `product_id` (`product_id`),
-  ADD KEY `attribute_id` (`attribute_id`);
+  ADD KEY `product_id` (`product_id`);
 
 --
 -- Indexes for table `store_details`
@@ -370,6 +405,14 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `variation_attributes`
+--
+ALTER TABLE `variation_attributes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `variation_id` (`variation_id`),
+  ADD KEY `attribute_id` (`attribute_id`);
+
+--
 -- Indexes for table `vendor_payments_details`
 --
 ALTER TABLE `vendor_payments_details`
@@ -385,6 +428,12 @@ ALTER TABLE `vendor_payments_details`
 -- AUTO_INCREMENT for table `ads`
 --
 ALTER TABLE `ads`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `attributes`
+--
+ALTER TABLE `attributes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -472,6 +521,12 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `variation_attributes`
+--
+ALTER TABLE `variation_attributes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `vendor_payments_details`
 --
 ALTER TABLE `vendor_payments_details`
@@ -508,6 +563,13 @@ ALTER TABLE `products_rate`
   ADD CONSTRAINT `products_rate_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON UPDATE CASCADE;
 
 --
+-- Constraints for table `product_attributes`
+--
+ALTER TABLE `product_attributes`
+  ADD CONSTRAINT `product_attributes_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `product_attributes_ibfk_2` FOREIGN KEY (`attribute_id`) REFERENCES `attributes` (`id`) ON UPDATE CASCADE;
+
+--
 -- Constraints for table `product_images`
 --
 ALTER TABLE `product_images`
@@ -517,8 +579,7 @@ ALTER TABLE `product_images`
 -- Constraints for table `product_variations`
 --
 ALTER TABLE `product_variations`
-  ADD CONSTRAINT `product_variations_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `product_variations_ibfk_2` FOREIGN KEY (`attribute_id`) REFERENCES `product_attributes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `product_variations_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `store_details`
@@ -532,6 +593,13 @@ ALTER TABLE `store_details`
 --
 ALTER TABLE `sub_categories`
   ADD CONSTRAINT `sub_categories_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `variation_attributes`
+--
+ALTER TABLE `variation_attributes`
+  ADD CONSTRAINT `variation_attributes_ibfk_1` FOREIGN KEY (`variation_id`) REFERENCES `product_variations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `variation_attributes_ibfk_2` FOREIGN KEY (`attribute_id`) REFERENCES `attributes` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `vendor_payments_details`

@@ -265,6 +265,7 @@ exports.createProducts = async (req, res, next) => {
     let product_data = req.body.product_data;
     let images_data = req.body.images_data;
     let variation_data = req.body.variation_data;
+    let variation_attributes_data = req.body.variation_attributes_data;
     try {
         transaction = await sequelize.transaction();
         console.log(req.body);
@@ -272,29 +273,58 @@ exports.createProducts = async (req, res, next) => {
             transaction,
         });
 
-        for (i = 0; i < images_data.length; i++) {
+        for (let i = 0; i < images_data.length; i++) {
             images_data[i] = { ...images_data[i], product_id: product.id };
         }
-        for (i = 0; i < variation_data.length; i++) {
-            variation_data[i] = {
-                ...variation_data[i],
-                product_id: product.id,
-            };
-        }
-        console.log({ images_data, variation_data });
         const images = await conn.product_images.bulkCreate(images_data, {
             transaction,
         });
-        const variations = await conn.product_variations.bulkCreate(
-            variation_data,
-            { transaction }
-        );
+        if (product_data.type == "basic") {
+            for (let i = 0; i < variation_attributes_data.length; i++) {
+                variation_attributes_data[i] = {
+                    ...variation_attributes_data[i],
+                    product_id: product.id,
+                };
+            }
+            const product_attributes = await conn.product_attributes.bulkCreate(
+                variation_attributes_data,
+                { transaction }
+            );
+        } else {
+            for (let i = 0; i < variation_data.length; i++) {
+                variation_data[i] = {
+                    ...variation_data[i],
+                    product_id: product.id,
+                };
+                const variations = await conn.product_variations.create(
+                    variation_data[i],
+                    { transaction }
+                );
+                for (
+                    let j = 0;
+                    j < variation_data[i].variation_attributes.length;
+                    j++
+                ) {
+                    variation_data[i].variation_attributes[j] = {
+                        ...variation_data[i].variation_attributes[j],
+                        variation_id: variations.id,
+                    };
+                    const variation_attributes =
+                        await conn.variation_attributes.create(
+                            variation_data[i].variation_attributes[j],
+                            { transaction }
+                        );
+                }
+            }
+        }
+
+        console.log({ images_data, variation_data });
 
         await transaction.commit();
 
         res.status(200).json({
             status: true,
-            data: { product, images, variations },
+            data: { product, images },
         });
     } catch (e) {
         console.log(e);
@@ -357,6 +387,9 @@ exports.paginateByCategoryId = async (req, res, next) => {
                         {
                             model: conn.store_details,
                             as: "store_details",
+                            where: {
+                                city_id: req.body.city_id,
+                            },
                         },
                     ],
                 },
@@ -409,6 +442,9 @@ exports.paginateByVendorId = async (req, res, next) => {
                         {
                             model: conn.store_details,
                             as: "store_details",
+                            where: {
+                                city_id: req.body.city_id,
+                            },
                         },
                     ],
                 },

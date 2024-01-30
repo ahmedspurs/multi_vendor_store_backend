@@ -1,17 +1,17 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('product_attributes', {
+  return sequelize.define('variation_attributes', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    product_id: {
+    variation_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'products',
+        model: 'product_variations',
         key: 'id'
       }
     },
@@ -22,10 +22,6 @@ module.exports = function(sequelize, DataTypes) {
         model: 'attributes',
         key: 'id'
       }
-    },
-    image: {
-      type: DataTypes.STRING(255),
-      allowNull: false
     },
     created: {
       type: DataTypes.DATE,
@@ -39,7 +35,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'product_attributes',
+    tableName: 'variation_attributes',
     timestamps: false,
     indexes: [
       {
@@ -51,10 +47,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "product_id",
+        name: "variation_id",
         using: "BTREE",
         fields: [
-          { name: "product_id" },
+          { name: "variation_id" },
         ]
       },
       {
