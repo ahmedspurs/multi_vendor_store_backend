@@ -3,10 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 30, 2024 at 03:16 AM
+-- Generation Time: Feb 02, 2024 at 09:31 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -607,6 +608,7 @@ ALTER TABLE `variation_attributes`
 ALTER TABLE `vendor_payments_details`
   ADD CONSTRAINT `vendor_payments_details_ibfk_1` FOREIGN KEY (`vendor_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `vendor_payments_details_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON UPDATE CASCADE;
+SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
