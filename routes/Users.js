@@ -12,6 +12,8 @@ const {
     search,
     login,
     createVendor,
+    vendorsByCityPaginate,
+    vendorsByCitySearch,
     updatePass,
 } = require("../controllers/Api/UsersController.js");
 router.route("/").get(getUsers).post(register);
@@ -21,6 +23,8 @@ router.route("/create-vendor").post(createVendor);
 router.route("/edit-pass").post(updatePass);
 // router.route("/paginate").post(paginate);
 router.route("/vendors/paginate").post(vendorsPaginate);
+router.route("/vendors/by-city-id/paginate").post(vendorsByCityPaginate);
+router.route("/vendors/by-city-id/search").post(vendorsByCitySearch);
 router.route("/vendors").get(getVendors);
 router.route("/search").post(search);
 router.route("/:id").get(getUsersById).put(updateUsers).delete(deleteUsers);

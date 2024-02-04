@@ -3,11 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 02, 2024 at 09:31 AM
+-- Generation Time: Feb 04, 2024 at 10:44 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -46,6 +45,7 @@ CREATE TABLE `ads` (
 CREATE TABLE `attributes` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `vendor_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -161,6 +161,7 @@ CREATE TABLE `products_rate` (
 
 CREATE TABLE `product_attributes` (
   `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `product_id` int(11) NOT NULL,
   `attribute_id` int(11) NOT NULL,
   `image` varchar(255) NOT NULL,
@@ -306,7 +307,8 @@ ALTER TABLE `ads`
 -- Indexes for table `attributes`
 --
 ALTER TABLE `attributes`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `vendor_id` (`vendor_id`);
 
 --
 -- Indexes for table `categories`
@@ -538,6 +540,12 @@ ALTER TABLE `vendor_payments_details`
 --
 
 --
+-- Constraints for table `attributes`
+--
+ALTER TABLE `attributes`
+  ADD CONSTRAINT `attributes_ibfk_1` FOREIGN KEY (`vendor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `cities`
 --
 ALTER TABLE `cities`
@@ -608,7 +616,6 @@ ALTER TABLE `variation_attributes`
 ALTER TABLE `vendor_payments_details`
   ADD CONSTRAINT `vendor_payments_details_ibfk_1` FOREIGN KEY (`vendor_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `vendor_payments_details_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON UPDATE CASCADE;
-SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

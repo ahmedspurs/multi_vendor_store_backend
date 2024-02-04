@@ -11,6 +11,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: false
     },
+    vendor_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
     created: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -32,6 +40,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "vendor_id",
+        using: "BTREE",
+        fields: [
+          { name: "vendor_id" },
         ]
       },
     ]

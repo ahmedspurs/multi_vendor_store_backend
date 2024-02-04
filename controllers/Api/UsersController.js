@@ -98,6 +98,7 @@ exports.login = async (req, res) => {
     try {
         const existingUser = await conn.users.findOne({
             where: { email: req.body.email },
+            include: ["store_details"],
         });
         if (!existingUser)
             return res.json({ status: false, msg: "بيانات الدخول غير صحيحة" });
@@ -130,6 +131,7 @@ exports.login = async (req, res) => {
                 user: {
                     id: found_user?.id,
                     name: found_user?.name,
+                    store_details: found_user?.store_details,
                 },
             },
         });
@@ -226,12 +228,80 @@ exports.search = async (req, res, next) => {
         });
 };
 
+exports.vendorsByCitySearch = async (req, res, next) => {
+    try {
+        var offset = (req.body.page - 1) * req.body.limit;
+        console.log("the offset", offset, "the limit is ", req.body.limit);
+        var result = await conn.users.findAll({
+            order: [["id", "DESC"]],
+
+            where: {
+                user_type: "vendor",
+            },
+            include: [
+                {
+                    model: conn.products,
+                    as: "products",
+                    where: {
+                        [searchCol]: {
+                            [Op.like]: "%" + search + "%",
+                        },
+                    },
+                    include: [
+                        {
+                            model: conn.sub_categories,
+                            as: "sub_category",
+                        },
+                    ],
+                },
+                {
+                    model: conn.store_details,
+                    as: "store_details",
+                    where: {
+                        city_id: req.body.city_id,
+                    },
+                },
+            ],
+
+            offset: offset,
+            limit: req.body.limit,
+            subQuery: true,
+        });
+        var count = await conn.users.findAll({
+            where: {
+                user_type: "vendor",
+            },
+            include: [
+                {
+                    model: conn.products,
+                    as: "products",
+                    include: [
+                        {
+                            model: conn.sub_categories,
+                            as: "sub_category",
+                        },
+                    ],
+                },
+            ],
+        });
+        res.status(200).json({ status: true, data: result, tot: count.length });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            status: false,
+            msg: "حدث خطأ ما في السيرفر",
+        });
+    }
+};
+
 //@decs   Get All
 //@route  GET
 //@access Public
 exports.getUsers = async (req, res, next) => {
     try {
-        const result = await conn.users.findAll();
+        const result = await conn.users.findAll({
+            include: ["store_details"],
+        });
         res.status(200).json({ status: true, data: result });
     } catch (e) {
         console.log(e);
@@ -290,6 +360,66 @@ exports.vendorsPaginate = async (req, res, next) => {
                             as: "sub_category",
                         },
                     ],
+                },
+            ],
+
+            offset: offset,
+            limit: req.body.limit,
+            subQuery: true,
+        });
+        var count = await conn.users.findAll({
+            where: {
+                user_type: "vendor",
+            },
+            include: [
+                {
+                    model: conn.products,
+                    as: "products",
+                    include: [
+                        {
+                            model: conn.sub_categories,
+                            as: "sub_category",
+                        },
+                    ],
+                },
+            ],
+        });
+        res.status(200).json({ status: true, data: result, tot: count.length });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            status: false,
+            msg: "حدث خطأ ما في السيرفر",
+        });
+    }
+};
+exports.vendorsByCityPaginate = async (req, res, next) => {
+    try {
+        var offset = (req.body.page - 1) * req.body.limit;
+        console.log("the offset", offset, "the limit is ", req.body.limit);
+        var result = await conn.users.findAll({
+            order: [["id", "DESC"]],
+
+            where: {
+                user_type: "vendor",
+            },
+            include: [
+                {
+                    model: conn.products,
+                    as: "products",
+                    include: [
+                        {
+                            model: conn.sub_categories,
+                            as: "sub_category",
+                        },
+                    ],
+                },
+                {
+                    model: conn.store_details,
+                    as: "store_details",
+                    where: {
+                        city_id: req.body.city_id,
+                    },
                 },
             ],
 

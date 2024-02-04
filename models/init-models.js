@@ -62,6 +62,8 @@ function initModels(sequelize) {
   products.hasMany(products_rate, { as: "products_rates", foreignKey: "product_id"});
   products.belongsTo(sub_categories, { as: "sub_category", foreignKey: "sub_category_id"});
   sub_categories.hasMany(products, { as: "products", foreignKey: "sub_category_id"});
+  attributes.belongsTo(users, { as: "vendor", foreignKey: "vendor_id"});
+  users.hasMany(attributes, { as: "attributes", foreignKey: "vendor_id"});
   orders.belongsTo(users, { as: "user", foreignKey: "user_id"});
   users.hasMany(orders, { as: "orders", foreignKey: "user_id"});
   products.belongsTo(users, { as: "vendor", foreignKey: "vendor_id"});

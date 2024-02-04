@@ -133,6 +133,30 @@ exports.paginate = async (req, res, next) => {
         });
     }
 };
+
+exports.paginateByVendor = async (req, res, next) => {
+    try {
+        const offset = (req.body.page - 1) * req.body.limit;
+        console.log("the offset", offset, "the limit is ", req.body.limit);
+        const result = await conn.attributes.findAll({
+            order: [["id", "DESC"]],
+            offset: offset,
+            limit: req.body.limit,
+            subQuery: true,
+            where: {
+                vendor_id: req.body.vendor_id,
+            },
+        });
+        const count = await conn.attributes.findAll();
+        res.status(200).json({ status: true, data: result, tot: count.length });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            status: false,
+            msg: `حدث خطأ ما في السيرفر`,
+        });
+    }
+};
 //@decs   Get All
 //@route  GET
 //@access Public

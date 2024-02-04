@@ -7,6 +7,14 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
+    name: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    image: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
     variation_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
